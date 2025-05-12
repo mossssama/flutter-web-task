@@ -15,9 +15,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ItemsPage extends StatelessWidget {
+class ItemsPage extends StatefulWidget {
   const ItemsPage({super.key});
 
+  @override
+  State<ItemsPage> createState() => _ItemsPageState();
+}
+
+class _ItemsPageState extends State<ItemsPage> {
   // Dummy data
   final List<String> imageUrls = const [
     'https://picsum.photos/seed/1/800/600',
@@ -30,55 +35,148 @@ class ItemsPage extends StatelessWidget {
     'https://picsum.photos/seed/8/800/600',
   ];
 
+  // Active tab state
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Items'),
-        actions: [
-          IconButton(icon: const Icon(Icons.filter_list), onPressed: () {}),
-          TextButton.icon(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.amber,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        toolbarHeight: 80, // Adjust the height as needed
+        backgroundColor: Colors.black,
+        title: Row(
+          children: [
+            const Text(
+              'logo',
+              style: TextStyle(fontSize: 32),
             ),
-            icon: const Icon(Icons.add, color: Colors.black),
-            label: const Text('Add a New Item', style: TextStyle(color: Colors.black)),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 16),
-        ],
+            const Spacer(), // Pushes the menu items to the right
+            _NavBarButton(
+              title: 'Items',
+              index: 0,
+              isSelected: _selectedIndex == 0,
+              onTap: () => _onTabSelected(0),
+            ),
+            _NavBarButton(
+              title: 'Pricing',
+              index: 1,
+              isSelected: _selectedIndex == 1,
+              onTap: () => _onTabSelected(1),
+            ),
+            _NavBarButton(
+              title: 'Info',
+              index: 2,
+              isSelected: _selectedIndex == 2,
+              onTap: () => _onTabSelected(2),
+            ),
+            _NavBarButton(
+              title: 'Tasks',
+              index: 3,
+              isSelected: _selectedIndex == 3,
+              onTap: () => _onTabSelected(3),
+            ),
+            _NavBarButton(
+              title: 'Analytics',
+              index: 4,
+              isSelected: _selectedIndex == 4,
+              onTap: () => _onTabSelected(4),
+            ),
+            const SizedBox(width: 16), // Space before the "Add a New Item" button
+            TextButton.icon(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.amber,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
+              icon: const Icon(Icons.add, color: Colors.black),
+              label: const Text('Add a New Item', style: TextStyle(color: Colors.black)),
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // choose grid vs list based on width
-          final bool isWide = constraints.maxWidth >= 600;
-          if (isWide) {
-            // 2–4 columns depending on width
-            final cols = (constraints.maxWidth ~/ 250).clamp(2, 4);
-            return GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: cols,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 3/4,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20), // Adjust spacing below the navbar
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // choose grid vs list based on width
+            final bool isWide = constraints.maxWidth >= 600;
+            if (isWide) {
+              // 2–4 columns depending on width
+              final cols = (constraints.maxWidth ~/ 250).clamp(2, 4);
+              return GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: cols,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 3/4,
+                ),
+                itemCount: imageUrls.length,
+                itemBuilder: (ctx, i) => ItemCard(imageUrl: imageUrls[i]),
+              );
+            } else {
+              // single column list
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: imageUrls.length,
+                itemBuilder: (ctx, i) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: ItemCard(imageUrl: imageUrls[i]),
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  // Update the selected tab index
+  void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+}
+
+class _NavBarButton extends StatelessWidget {
+  final String title;
+  final int index;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _NavBarButton({
+    required this.title,
+    required this.index,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white60,
+                fontSize: 16,
               ),
-              itemCount: imageUrls.length,
-              itemBuilder: (ctx, i) => ItemCard(imageUrl: imageUrls[i]),
-            );
-          } else {
-            // single column list
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: imageUrls.length,
-              itemBuilder: (ctx, i) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: ItemCard(imageUrl: imageUrls[i]),
+            ),
+            if (isSelected)
+              Container(
+                height: 2,
+                width: 30,
+                color: Colors.yellow,
+                margin: const EdgeInsets.only(top: 4),
               ),
-            );
-          }
-        },
+          ],
+        ),
       ),
     );
   }
@@ -98,7 +196,7 @@ class ItemCard extends StatelessWidget {
         children: [
           // image
           AspectRatio(
-            aspectRatio: 16/9,
+            aspectRatio: 16 / 9,
             child: Image.network(imageUrl, fit: BoxFit.cover),
           ),
           // status dropdown
