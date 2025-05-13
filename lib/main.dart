@@ -56,7 +56,7 @@ class _ItemsPageState extends State<ItemsPage> {
         title: Row(
           children: [
             const Text(
-              'logo',
+              'Logo',
               style: TextStyle(fontSize: 32),
             ),
             const Spacer(), // Pushes the menu items to the right
@@ -90,22 +90,59 @@ class _ItemsPageState extends State<ItemsPage> {
               isSelected: _selectedIndex == 4,
               onTap: () => _onTabSelected(4),
             ),
-            const SizedBox(width: 16), // Space before the "Add a New Item" button
-            TextButton.icon(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.amber,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              icon: const Icon(Icons.add, color: Colors.black),
-              label: const Text('Add a New Item', style: TextStyle(color: Colors.black)),
-              onPressed: () {},
+            const SizedBox(width: 16), // Space between menu items and icons
+            // Adding the settings and notifications icons
+            IconButton(
+              icon: const Icon(Icons.settings, color: Colors.white),
+              onPressed: () {}, // Settings functionality
             ),
+            IconButton(
+              icon: const Icon(Icons.notifications, color: Colors.white),
+              onPressed: () {}, // Notification functionality
+            ),
+            const SizedBox(width: 16), // Space before the username and dropdown
+            // Adding the user profile (Username + Dropdown)
+            const _UserProfile(),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20), // Adjust spacing below the navbar
-        child: _screens[_selectedIndex], // Display the selected screen
+      body: Column(
+        children: [
+          // Add a New Item button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Items',
+                  style: TextStyle(fontSize: 32),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.filter_list, color: Colors.white), // Placeholder icon
+                      onPressed: () {}, // Icon functionality
+                    ),
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      ),
+                      icon: const Icon(Icons.add, color: Colors.black),
+                      label: const Text('Add a New Item', style: TextStyle(color: Colors.black)),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16), // Space between button and content
+
+          // Display selected screen
+          Expanded(child: _screens[_selectedIndex]),
+        ],
       ),
     );
   }
@@ -161,6 +198,30 @@ class _NavBarButton extends StatelessWidget {
   }
 }
 
+class _UserProfile extends StatelessWidget {
+  const _UserProfile();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const CircleAvatar(
+          backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
+        ),
+        const SizedBox(width: 8),
+        const Text(
+          'John Doe',
+          style: TextStyle(color: Colors.white),
+        ),
+        const Icon(
+          Icons.arrow_drop_down,
+          color: Colors.white,
+        ),
+      ],
+    );
+  }
+}
+
 class ItemsScreen extends StatelessWidget {
   const ItemsScreen({super.key});
 
@@ -172,7 +233,7 @@ class ItemsScreen extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 3/4,
+        childAspectRatio: 3 / 4,
       ),
       itemCount: 8,
       itemBuilder: (ctx, i) => ItemCard(imageUrl: 'https://picsum.photos/seed/$i/800/600'),
