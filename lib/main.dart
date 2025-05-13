@@ -203,17 +203,17 @@ class _UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
         ),
-        const SizedBox(width: 8),
-        const Text(
+        SizedBox(width: 8),
+        Text(
           'John Doe',
           style: TextStyle(color: Colors.white),
         ),
-        const Icon(
+        Icon(
           Icons.arrow_drop_down,
           color: Colors.white,
         ),
@@ -227,16 +227,21 @@ class ItemsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 3 / 4,
-      ),
-      itemCount: 8,
-      itemBuilder: (ctx, i) => ItemCard(imageUrl: 'https://picsum.photos/seed/$i/800/600'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int columns = (constraints.maxWidth ~/ 300).clamp(1, 4); // Minimum of 1 column, max of 4
+        return GridView.builder(
+          padding: const EdgeInsets.all(16),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 3 / 4,
+          ),
+          itemCount: 8,
+          itemBuilder: (ctx, i) => ItemCard(imageUrl: 'https://picsum.photos/seed/$i/800/600'),
+        );
+      },
     );
   }
 }
