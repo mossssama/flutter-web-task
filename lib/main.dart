@@ -53,6 +53,7 @@ class _ItemsPageState extends State<ItemsPage> {
       appBar: AppBar(
         toolbarHeight: 80, // Adjust the height as needed
         backgroundColor: Colors.black,
+        bottom: PreferredSize(preferredSize: const Size.fromHeight(1), child: Container(height: 0.5,color: Colors.grey[600])),
         title: Row(
           children: [
             const Text(
@@ -175,8 +176,8 @@ class _NavBarButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 32),
             Text(
               title,
               style: TextStyle(
@@ -184,12 +185,12 @@ class _NavBarButton extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
+            const SizedBox(height: 30),
             if (isSelected)
               Container(
-                height: 2,
-                width: 30,
-                color: Colors.yellow,
-                margin: const EdgeInsets.only(top: 4),
+                height: 4,
+                width: 50,
+                color: isSelected ? Colors.yellow : Colors.black,
               ),
           ],
         ),
