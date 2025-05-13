@@ -162,13 +162,13 @@ class _NavBarButton extends StatelessWidget {
 }
 
 class ItemsScreen extends StatelessWidget {
-  const ItemsScreen();
+  const ItemsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
@@ -182,7 +182,7 @@ class ItemsScreen extends StatelessWidget {
 
 class PlaceholderScreen extends StatelessWidget {
   final String title;
-  const PlaceholderScreen({required this.title});
+  const PlaceholderScreen({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
