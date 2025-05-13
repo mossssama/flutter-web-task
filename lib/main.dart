@@ -38,6 +38,15 @@ class _ItemsPageState extends State<ItemsPage> {
   // Active tab state
   int _selectedIndex = 0;
 
+  // List of screens for each tab
+  final List<Widget> _screens = [
+    const ItemsScreen(),
+    const PlaceholderScreen(title: "Pricing"),
+    const PlaceholderScreen(title: "Info"),
+    const PlaceholderScreen(title: "Tasks"),
+    const PlaceholderScreen(title: "Analytics"),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,37 +105,7 @@ class _ItemsPageState extends State<ItemsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20), // Adjust spacing below the navbar
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // choose grid vs list based on width
-            final bool isWide = constraints.maxWidth >= 600;
-            if (isWide) {
-              // 2–4 columns depending on width
-              final cols = (constraints.maxWidth ~/ 250).clamp(2, 4);
-              return GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: cols,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 3/4,
-                ),
-                itemCount: imageUrls.length,
-                itemBuilder: (ctx, i) => ItemCard(imageUrl: imageUrls[i]),
-              );
-            } else {
-              // single column list
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: imageUrls.length,
-                itemBuilder: (ctx, i) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: ItemCard(imageUrl: imageUrls[i]),
-                ),
-              );
-            }
-          },
-        ),
+        child: _screens[_selectedIndex], // Display the selected screen
       ),
     );
   }
@@ -177,6 +156,40 @@ class _NavBarButton extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ItemsScreen extends StatelessWidget {
+  const ItemsScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        childAspectRatio: 3/4,
+      ),
+      itemCount: 8,
+      itemBuilder: (ctx, i) => ItemCard(imageUrl: 'https://picsum.photos/seed/$i/800/600'),
+    );
+  }
+}
+
+class PlaceholderScreen extends StatelessWidget {
+  final String title;
+  const PlaceholderScreen({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        '$title Screen',
+        style: const TextStyle(fontSize: 24, color: Colors.white),
       ),
     );
   }
