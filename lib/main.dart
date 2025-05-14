@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() => runApp(const MyApp());
 
@@ -56,10 +57,7 @@ class _ItemsPageState extends State<ItemsPage> {
         bottom: PreferredSize(preferredSize: const Size.fromHeight(1), child: Container(height: 0.5,color: Colors.grey[600])),
         title: Row(
           children: [
-            const Text(
-              'Logo',
-              style: TextStyle(fontSize: 32),
-            ),
+            SvgPicture.asset('assets/logo.svg'),
             const Spacer(), // Pushes the menu items to the right
             _NavBarButton(
               title: 'Items',
@@ -67,41 +65,62 @@ class _ItemsPageState extends State<ItemsPage> {
               isSelected: _selectedIndex == 0,
               onTap: () => _onTabSelected(0),
             ),
+            const SizedBox(width: 16),
             _NavBarButton(
               title: 'Pricing',
               index: 1,
               isSelected: _selectedIndex == 1,
               onTap: () => _onTabSelected(1),
             ),
+            const SizedBox(width: 16),
             _NavBarButton(
               title: 'Info',
               index: 2,
               isSelected: _selectedIndex == 2,
               onTap: () => _onTabSelected(2),
             ),
+            const SizedBox(width: 16),
             _NavBarButton(
               title: 'Tasks',
               index: 3,
               isSelected: _selectedIndex == 3,
               onTap: () => _onTabSelected(3),
             ),
+            const SizedBox(width: 16),
             _NavBarButton(
               title: 'Analytics',
               index: 4,
               isSelected: _selectedIndex == 4,
               onTap: () => _onTabSelected(4),
             ),
-            const SizedBox(width: 16), // Space between menu items and icons
+            const SizedBox(width: 16), // Space betweconst const en menu items and icons
             // Adding the settings and notifications icons
+            const Center(
+              child: VerticalLine(
+                width: 1,        // e.g. 4 pixels wide
+                height: 25,     // e.g. 200 pixels tall
+                color: Color(0xFF3A3A3A), // any shade you like
+              ),
+            ),
+            const SizedBox(width: 16), // Space between menu items and icons
             IconButton(
-              icon: const Icon(Icons.settings, color: Colors.white),
+              icon: SvgPicture.asset('assets/gear.svg'),
               onPressed: () {}, // Settings functionality
             ),
+            const SizedBox(width: 12), // Space before the username and dropdown
             IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.white),
+              icon: SvgPicture.asset('assets/notification.svg'),
               onPressed: () {}, // Notification functionality
             ),
             const SizedBox(width: 16), // Space before the username and dropdown
+            const Center(
+              child: VerticalLine(
+                width: 1,        // e.g. 4 pixels wide
+                height: 25,     // e.g. 200 pixels tall
+                color: Color(0xFF3A3A3A), // any shade you like
+              ),
+            ),
+            const SizedBox(width: 24), // Space before the username and dropdown
             // Adding the user profile (Username + Dropdown)
             const _UserProfile(),
           ],
@@ -122,16 +141,27 @@ class _ItemsPageState extends State<ItemsPage> {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.filter_list, color: Colors.white), // Placeholder icon
+                      icon: SvgPicture.asset('assets/settings.svg'),
                       onPressed: () {}, // Icon functionality
                     ),
+                    const SizedBox(width: 16), // Space betweconst const en menu items and icons
+                    // Adding the settings and notifications icons
+                    const Center(
+                      child: VerticalLine(
+                        width: 1,        // e.g. 4 pixels wide
+                        height: 48,     // e.g. 200 pixels tall
+                        color: Color(0xFF3A3A3A), // any shade you like
+                      ),
+                    ),
+                    const SizedBox(width: 24), // Space between menu items and icons
                     TextButton.icon(
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.amber,
+                        minimumSize: const Size(0, 48),    // ← width=0, height=48
+                        backgroundColor: const Color(0xFFFFC268),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                       icon: const Icon(Icons.add, color: Colors.black),
-                      label: const Text('Add a New Item', style: TextStyle(color: Colors.black)),
+                      label: const Text('Add a New Item', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal)),
                       onPressed: () {},
                     ),
                   ],
@@ -181,16 +211,16 @@ class _NavBarButton extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white60,
-                fontSize: 16,
+                color: isSelected ? Colors.white : const Color(0xFF999999),
+                fontSize: 14,
               ),
             ),
             const SizedBox(height: 30),
             if (isSelected)
               Container(
-                height: 4,
+                height: 5,
                 width: 50,
-                color: isSelected ? Colors.yellow : Colors.black,
+                color: isSelected ? const Color(0xFFFFC268) : Colors.black,
               ),
           ],
         ),
@@ -204,18 +234,16 @@ class _UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        CircleAvatar(
-          backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
-        ),
-        SizedBox(width: 8),
-        Text(
+        Image.asset('assets/pp.png'),
+        const SizedBox(width: 8),
+        const Text(
           'John Doe',
           style: TextStyle(color: Colors.white),
         ),
-        Icon(
-          Icons.arrow_drop_down,
+        const Icon(
+          Icons.keyboard_arrow_down,
           color: Colors.white,
         ),
       ],
@@ -324,6 +352,35 @@ class ItemCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class VerticalLine extends StatelessWidget {
+  final double width;
+
+  final double height;
+
+  final Color color;
+
+  const VerticalLine({
+    Key? key,
+    required this.width,
+    required this.height,
+    this.color = const Color(0xFF2A2A2A),
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(width / 2),
+        ),
       ),
     );
   }
