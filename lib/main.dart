@@ -258,7 +258,7 @@ class ItemsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        int columns = (constraints.maxWidth ~/ 300).clamp(1, 4); // Minimum of 1 column, max of 4
+        int columns = (constraints.maxWidth ~/ 300).clamp(1, 5); // Minimum of 1 column, max of 4
         return GridView.builder(
           padding: const EdgeInsets.all(16),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -267,8 +267,15 @@ class ItemsScreen extends StatelessWidget {
             crossAxisSpacing: 16,
             childAspectRatio: 3 / 4,
           ),
-          itemCount: 8,
-          itemBuilder: (ctx, i) => ItemCard(imageUrl: 'https://picsum.photos/seed/$i/800/600'),
+          itemCount: 8, // or however many cards you have
+          itemBuilder: (ctx, i) {
+            final assetName = 'assets/card${i+1}.png';
+            return Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              clipBehavior: Clip.hardEdge,
+              child: Image.asset(assetName, fit: BoxFit.cover),
+            );
+          },
         );
       },
     );
