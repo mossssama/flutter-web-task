@@ -48,84 +48,75 @@ class _ItemsPageState extends State<ItemsPage> {
     const PlaceholderScreen(title: "Analytics"),
   ];
 
+  void _onTabSelected(int index) {
+    setState(() => _selectedIndex = index);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 700;
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80, // Adjust the height as needed
+        toolbarHeight: 80,
         backgroundColor: Colors.black,
-        bottom: PreferredSize(preferredSize: const Size.fromHeight(1), child: Container(height: 0.5,color: Colors.grey[600])),
-        title: Row(
-          children: [
-            SvgPicture.asset('assets/logo.svg'),
-            const Spacer(), // Pushes the menu items to the right
-            _NavBarButton(
-              title: 'Items',
-              index: 0,
-              isSelected: _selectedIndex == 0,
-              onTap: () => _onTabSelected(0),
-            ),
-            const SizedBox(width: 16),
-            _NavBarButton(
-              title: 'Pricing',
-              index: 1,
-              isSelected: _selectedIndex == 1,
-              onTap: () => _onTabSelected(1),
-            ),
-            const SizedBox(width: 16),
-            _NavBarButton(
-              title: 'Info',
-              index: 2,
-              isSelected: _selectedIndex == 2,
-              onTap: () => _onTabSelected(2),
-            ),
-            const SizedBox(width: 16),
-            _NavBarButton(
-              title: 'Tasks',
-              index: 3,
-              isSelected: _selectedIndex == 3,
-              onTap: () => _onTabSelected(3),
-            ),
-            const SizedBox(width: 16),
-            _NavBarButton(
-              title: 'Analytics',
-              index: 4,
-              isSelected: _selectedIndex == 4,
-              onTap: () => _onTabSelected(4),
-            ),
-            const SizedBox(width: 16), // Space betweconst const en menu items and icons
-            // Adding the settings and notifications icons
-            const Center(
-              child: VerticalLine(
-                width: 1,        // e.g. 4 pixels wide
-                height: 25,     // e.g. 200 pixels tall
-                color: Color(0xFF3A3A3A), // any shade you like
-              ),
-            ),
-            const SizedBox(width: 16), // Space between menu items and icons
-            IconButton(
-              icon: SvgPicture.asset('assets/gear.svg'),
-              onPressed: () {}, // Settings functionality
-            ),
-            const SizedBox(width: 12), // Space before the username and dropdown
-            IconButton(
-              icon: SvgPicture.asset('assets/notification.svg'),
-              onPressed: () {}, // Notification functionality
-            ),
-            const SizedBox(width: 16), // Space before the username and dropdown
-            const Center(
-              child: VerticalLine(
-                width: 1,        // e.g. 4 pixels wide
-                height: 25,     // e.g. 200 pixels tall
-                color: Color(0xFF3A3A3A), // any shade you like
-              ),
-            ),
-            const SizedBox(width: 24), // Space before the username and dropdown
-            // Adding the user profile (Username + Dropdown)
-            const _UserProfile(),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 0.5, color: Colors.grey[600]),
         ),
+
+        // On mobile: hamburger menu
+        leading: isMobile
+            ? PopupMenuButton<int>(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onSelected: _onTabSelected,
+          itemBuilder: (ctx) => [
+            const PopupMenuItem(value: 0, child: Text('Items')),
+            const PopupMenuItem(value: 1, child: Text('Pricing')),
+            const PopupMenuItem(value: 2, child: Text('Info')),
+            const PopupMenuItem(value: 3, child: Text('Tasks')),
+            const PopupMenuItem(value: 4, child: Text('Analytics')),
+          ],
+        )
+            : null,
+
+        // Always show logo
+        title: SvgPicture.asset('assets/logo.svg'),
+
+        actions: [
+          // Desktop: inline nav buttons
+          if (!isMobile) ...[
+            for (var i = 0; i < 5; i++) ...[
+              _NavBarButton(
+                title: ['Items', 'Pricing', 'Info', 'Tasks', 'Analytics'][i],
+                index: i,
+                isSelected: _selectedIndex == i,
+                onTap: () => _onTabSelected(i),
+              ),
+              const SizedBox(width: 16),
+            ],
+            const Center(
+              child: VerticalLine(width: 1, height: 25, color: Color(0xFF3A3A3A)),
+            ),
+            const SizedBox(width: 16),
+          ],
+
+          // Always-shown icons + profile
+          IconButton(
+            icon: SvgPicture.asset('assets/gear.svg'),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 12),
+          IconButton(
+            icon: SvgPicture.asset('assets/notification.svg'),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 24),
+          const _UserProfile(),
+          const SizedBox(width: 16),
+        ],
       ),
+
       body: Column(
         children: [
           // Add a New Item button
@@ -134,34 +125,31 @@ class _ItemsPageState extends State<ItemsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Items',
-                  style: TextStyle(fontSize: 32),
-                ),
+                const Text('Items', style: TextStyle(fontSize: 32)),
                 Row(
                   children: [
                     IconButton(
                       icon: SvgPicture.asset('assets/settings.svg'),
-                      onPressed: () {}, // Icon functionality
+                      onPressed: () {},
                     ),
-                    const SizedBox(width: 16), // Space betweconst const en menu items and icons
-                    // Adding the settings and notifications icons
+                    const SizedBox(width: 16),
                     const Center(
-                      child: VerticalLine(
-                        width: 1,        // e.g. 4 pixels wide
-                        height: 48,     // e.g. 200 pixels tall
-                        color: Color(0xFF3A3A3A), // any shade you like
-                      ),
+                      child: VerticalLine(width: 1, height: 48, color: Color(0xFF3A3A3A)),
                     ),
-                    const SizedBox(width: 24), // Space between menu items and icons
+                    const SizedBox(width: 24),
                     TextButton.icon(
                       style: TextButton.styleFrom(
-                        minimumSize: const Size(0, 48),    // ← width=0, height=48
+                        minimumSize: const Size(0, 48),
                         backgroundColor: const Color(0xFFFFC268),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                       icon: const Icon(Icons.add, color: Colors.black),
-                      label: const Text('Add a New Item', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal)),
+                      label: const Text(
+                        'Add a New Item',
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      ),
                       onPressed: () {},
                     ),
                   ],
@@ -169,7 +157,8 @@ class _ItemsPageState extends State<ItemsPage> {
               ],
             ),
           ),
-          const SizedBox(height: 16), // Space between button and content
+
+          const SizedBox(height: 16),
 
           // Display selected screen
           Expanded(child: _screens[_selectedIndex]),
@@ -177,14 +166,8 @@ class _ItemsPageState extends State<ItemsPage> {
       ),
     );
   }
-
-  // Update the selected tab index
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 }
+
 
 class _NavBarButton extends StatelessWidget {
   final String title;
@@ -207,7 +190,7 @@ class _NavBarButton extends StatelessWidget {
         onTap: onTap,
         child: Column(
           children: [
-            const SizedBox(height: 32),
+            const SizedBox(height: 30),
             Text(
               title,
               style: TextStyle(
@@ -215,10 +198,10 @@ class _NavBarButton extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 28),
             if (isSelected)
               Container(
-                height: 5,
+                height: 2,
                 width: 50,
                 color: isSelected ? const Color(0xFFFFC268) : Colors.black,
               ),
